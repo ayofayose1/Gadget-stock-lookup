@@ -1,0 +1,530 @@
+{
+  "name": "Gadget stock lookup",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        928,
+        -144
+      ],
+      "id": "67e386fc-9a50-43ec-90ce-94ed0ddfd409",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gadget-stock-lookup",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -784,
+        16
+      ],
+      "id": "f35bd8cc-6b35-4bcc-a3cd-7ac1c9e33afb",
+      "name": "Webhook",
+      "webhookId": "b2f23c60-4217-44e0-b5f9-10841a8c5b19"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "ae637111-ccff-444b-b8c4-0e6ded2fd9ed",
+              "leftValue": "={{ $json.requested_product }}",
+              "rightValue": "={{ $json.product }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "92266e3c-3138-4932-99e6-3d973a99049e",
+              "leftValue": "={{ $json.requested_brand }}",
+              "rightValue": "={{ $json.brand }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "b0cf376f-df0e-4b6b-b133-32ea3d6dfb90",
+              "leftValue": "={{ $json.stock }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "048b39ed-17a4-4590-bd6f-02071eeeed8c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5e73e6e3-6b1e-4cc4-a400-619224b52298",
+              "name": "status",
+              "value": "available ",
+              "type": "string"
+            },
+            {
+              "id": "a249b28c-221b-45b5-b472-c91d11d12175",
+              "name": "product ",
+              "value": "={{ $json.product }}",
+              "type": "string"
+            },
+            {
+              "id": "a34bc6c9-323c-4411-9f04-1838e8971a8b",
+              "name": "brand",
+              "value": "={{ $json.brand }}",
+              "type": "string"
+            },
+            {
+              "id": "acfe3a90-c702-495e-a350-509643abc8f7",
+              "name": "stock",
+              "value": "={{ $json.stock }}",
+              "type": "number"
+            },
+            {
+              "id": "9023f188-b1fc-498c-993e-e4faff188440",
+              "name": "price",
+              "value": "={{ $json.price }}",
+              "type": "number"
+            },
+            {
+              "id": "2bba1529-8267-4455-b86c-fa34dafe146b",
+              "name": "message",
+              "value": "Product is  in stock",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        288,
+        -144
+      ],
+      "id": "c25bb893-7071-4359-b76b-7397cf63f8d0",
+      "name": "Available Response "
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e849555a-6b9e-45c6-aff4-c515ebe44e0b",
+              "name": "status",
+              "value": "unavailable",
+              "type": "string"
+            },
+            {
+              "id": "cc6cdb00-c82f-4472-adde-ac34e6ffc9d5",
+              "name": "product ",
+              "value": "={{ $json.requested_product }}",
+              "type": "string"
+            },
+            {
+              "id": "81b76ca4-2cd4-4b3c-a00c-ac2656b9c013",
+              "name": "brand",
+              "value": "={{ $json.requested_brand }}",
+              "type": "string"
+            },
+            {
+              "id": "ad3facd5-cfbd-49d9-b21e-d99994bbf6a3",
+              "name": "message",
+              "value": "The requested product is unavailable. Here are some alternatives ",
+              "type": "string"
+            },
+            {
+              "id": "637fc847-d83a-4e85-9dc1-30579b4f54ef",
+              "name": "alternatives",
+              "value": "={{ $json.alternatives }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        768,
+        32
+      ],
+      "id": "bcfe6629-4d72-4996-a0d6-63a95f1b7aad",
+      "name": "Unavailable Response"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -224,
+        16
+      ],
+      "id": "4e5000c9-37af-440b-855a-76efde1731b0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "11fb5ea2-71c4-443c-a5c2-cdf57d508572",
+              "name": "requested_product",
+              "value": "={{ $json.body.product }}",
+              "type": "string"
+            },
+            {
+              "id": "bb9779de-0c6b-46e8-9d55-44644873d323",
+              "name": "requested_brand",
+              "value": "={{ $json.body.brand }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -560,
+        16
+      ],
+      "id": "50b0212e-014b-4e56-9479-bdc47ff04490",
+      "name": "customer request"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        560,
+        32
+      ],
+      "id": "d20dee4e-4ae2-46ec-b0c3-beab465f5c9f",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NUo6yzXI29EUPeyQOsDjxUIde7kVN3SCpgeUg-aOo84",
+          "mode": "list",
+          "cachedResultName": "Gadget Inventory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NUo6yzXI29EUPeyQOsDjxUIde7kVN3SCpgeUg-aOo84/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NUo6yzXI29EUPeyQOsDjxUIde7kVN3SCpgeUg-aOo84/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        192
+      ],
+      "id": "0145c9ae-3a6c-4f51-aa13-68ee7c424c16",
+      "name": "gooogle sheet inventory",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UjKnGE0tvFmec9CT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "4291db6b-7f4d-47a0-baa1-a9d6eba69d5a",
+              "leftValue": "={{ $json.stock }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "3b9e995f-f1e5-40fd-b9b6-8d8d780e6344",
+              "leftValue": "={{ $json.product }}",
+              "rightValue": "={{ $('customer request').item.json.requested_product }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        192,
+        192
+      ],
+      "id": "3453e5ca-4449-419f-8eb5-2a31d6e7abbf",
+      "name": "filter available alternatives "
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "alternatives",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        400,
+        176
+      ],
+      "id": "d66316b5-8a79-4302-946e-e493c1f535c9",
+      "name": "Aggregate/alternatives"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NUo6yzXI29EUPeyQOsDjxUIde7kVN3SCpgeUg-aOo84",
+          "mode": "list",
+          "cachedResultName": "Gadget Inventory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NUo6yzXI29EUPeyQOsDjxUIde7kVN3SCpgeUg-aOo84/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NUo6yzXI29EUPeyQOsDjxUIde7kVN3SCpgeUg-aOo84/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=product",
+              "lookupValue": "={{ $json.requested_product }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -384,
+        112
+      ],
+      "id": "40cb8fdc-b665-4d6b-b585-40625623de09",
+      "name": "google sheet inventory",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UjKnGE0tvFmec9CT",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "customer request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Available Response ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "gooogle sheet inventory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Available Response ": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unavailable Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "customer request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "google sheet inventory",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Unavailable Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gooogle sheet inventory": {
+      "main": [
+        [
+          {
+            "node": "filter available alternatives ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter available alternatives ": {
+      "main": [
+        [
+          {
+            "node": "Aggregate/alternatives",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate/alternatives": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "google sheet inventory": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "772e9879-c975-4c38-8820-cbc4f1bf84d2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c2ef06e6d4ddfe0c6cc3024779d21259e14127eaea32bd8053add4d6102e9091"
+  },
+  "nodeGroups": [],
+  "id": "0ysI9Yh7dlYkG2rl",
+  "tags": []
+}
